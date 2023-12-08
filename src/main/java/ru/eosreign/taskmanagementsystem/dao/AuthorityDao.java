@@ -24,6 +24,7 @@ public class AuthorityDao {
                 "RETURNING ID";
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("role", role);
+
         return Optional.ofNullable(
                         template.queryForObject(sql, parameterSource, Long.class))
                 .orElseThrow(() -> new RuntimeException("I dont have any idea what's happen."));
