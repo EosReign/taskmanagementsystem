@@ -9,7 +9,7 @@ CREATE TABLE customer(
     email       TEXT        ,
     password    TEXT        NOT NULL,
     authority   BIGINT      NOT NULL,
-    createdAt   TIMESTAMP   DEFAULT now(),
+    created_at   TIMESTAMP   DEFAULT now(),
     FOREIGN KEY (authority) REFERENCES authority (id)
 );
 
@@ -21,5 +21,6 @@ CREATE TABLE task(
     priority    TEXT        NOT NULL,
     author      BIGINT      NOT NULL,
     executor    BIGINT      ,
-    FOREIGN KEY (author, executor) REFERENCES customer (id)
+    FOREIGN KEY (author) REFERENCES customer (id),
+    FOREIGN KEY (executor) REFERENCES customer (id)
 )

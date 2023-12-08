@@ -1,4 +1,4 @@
-package ru.eosreign.taskmanagementsystem.entity;
+package ru.eosreign.taskmanagementsystem.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Authority {
-    private Long id;
-    private String role;
+public class CustomerDto {
+    private String fio;
+    private String email;
 }

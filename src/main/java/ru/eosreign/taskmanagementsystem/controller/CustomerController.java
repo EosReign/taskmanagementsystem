@@ -3,8 +3,9 @@ package ru.eosreign.taskmanagementsystem.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.eosreign.taskmanagementsystem.dto.ListCustomerDto;
 import ru.eosreign.taskmanagementsystem.dto.NewCustomerDto;
-import ru.eosreign.taskmanagementsystem.dto.UpdateCustomerDto;
+import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
 import ru.eosreign.taskmanagementsystem.service.CustomerService;
 
 @RestController
@@ -17,16 +18,21 @@ public class CustomerController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> createCustomer(@RequestBody NewCustomerDto dto) {
+    public ResponseEntity<NewCustomerDto> createCustomer(@RequestBody NewCustomerDto dto) {
         return new ResponseEntity<>(customerService.createCustomer(dto), HttpStatus.CREATED);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Void> readCustomer(@PathVariable("id") Long id) {
+    public ResponseEntity<CustomerDto> readCustomer(@PathVariable("id") Long id) {
         return new ResponseEntity<>(customerService.getCustomer(id), HttpStatus.FOUND);
     }
 
+    @GetMapping()
+    public ResponseEntity<ListCustomerDto> readCustomers() {
+        return new ResponseEntity<>(customerService.getCustomers(), HttpStatus.FOUND);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCustomer(@RequestBody UpdateCustomerDto dto, @PathVariable("id") Long id) {
+    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody CustomerDto dto, @PathVariable("id") Long id) {
         return new ResponseEntity<>(customerService.updateCustomer(dto, id), HttpStatus.OK);
     }
 
@@ -35,4 +41,6 @@ public class CustomerController {
         customerService.deleteCustomer(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 }
