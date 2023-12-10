@@ -1,15 +1,16 @@
 package ru.eosreign.taskmanagementsystem.dao;
 
-
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.eosreign.taskmanagementsystem.dto.NewCustomerDto;
 import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
+import ru.eosreign.taskmanagementsystem.entity.Customer;
 import ru.eosreign.taskmanagementsystem.exception.CustomerNotFoundException;
 import ru.eosreign.taskmanagementsystem.exception.EmptyCustomerTableException;
 import ru.eosreign.taskmanagementsystem.mapper.CustomerDtoMapper;
+import ru.eosreign.taskmanagementsystem.mapper.CustomerRowMapper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -69,5 +70,14 @@ public class CustomerDao {
         String sql = "DELETE FROM customer WHERE id = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource("id", id);
         template.update(sql, parameterSource);
+    }
+
+    public Customer getCustomerByEmail(String email) throws CustomerNotFoundException {
+        String sql = "SELECT * FROM customer WHERE customer.email = :email";
+        SqlParameterSource parameterSource = new MapSqlParameterSource("email", email);
+
+        return Optional.ofNullable(
+                        template.queryForObject(sql, parameterSource, new CustomerRowMapper()))
+                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with email: %s not found", email)));
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import ru.eosreign.taskmanagementsystem.entity.Authority;
 import ru.eosreign.taskmanagementsystem.exception.AuthorityNotFoundException;
 
 import java.util.Optional;
@@ -30,12 +31,17 @@ public class AuthorityDao {
                 .orElseThrow(() -> new RuntimeException("I dont have any idea what's happen."));
     }
 
-    public Long getAuthority(Long id) throws AuthorityNotFoundException {
+    public Authority getAuthority(Long id) throws AuthorityNotFoundException {
         String sql = "SELECT authority.id FROM authority WHERE authority.id = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource("id", id);
 
         return Optional.ofNullable(
-                        template.queryForObject(sql, parameterSource, Long.class))
+                        template.queryForObject(sql, parameterSource, (rs, rf) -> {
+                            Authority authority = new Authority();
+                            authority.setId(rs.getLong("id"));
+                            authority.setRole(rs.getString("role"));
+                            return authority;
+                        }))
                 .orElseThrow(() -> new AuthorityNotFoundException(String.format("Authority id-%d not found", id)));
     }
 
