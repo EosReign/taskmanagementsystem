@@ -27,25 +27,6 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @Operation(summary = "Create customer",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Customer is created",
-                            content = {
-                                    @Content(
-                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                            schema = @Schema(implementation = Customer.class)
-                                    )
-                            }
-                    )
-
-            })
-    @PostMapping()
-    public ResponseEntity<NewCustomerDto> createCustomer(@RequestBody NewCustomerDto dto) {
-        return new ResponseEntity<>(customerService.createCustomer(dto), HttpStatus.CREATED);
-    }
-
     @Operation(summary = "Get customer by id",
             responses = {
                     @ApiResponse(

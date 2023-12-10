@@ -3,6 +3,7 @@ package ru.eosreign.taskmanagementsystem.dao;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 import ru.eosreign.taskmanagementsystem.dto.NewCustomerDto;
 import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
@@ -72,12 +73,12 @@ public class CustomerDao {
         template.update(sql, parameterSource);
     }
 
-    public Customer getCustomerByEmail(String email) throws CustomerNotFoundException {
+    public Customer getCustomerByEmail(String email) throws UsernameNotFoundException {
         String sql = "SELECT * FROM customer WHERE customer.email = :email";
         SqlParameterSource parameterSource = new MapSqlParameterSource("email", email);
 
         return Optional.ofNullable(
                         template.queryForObject(sql, parameterSource, new CustomerRowMapper()))
-                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with email: %s not found", email)));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format("Customer with email: %s not found", email)));
     }
 }
