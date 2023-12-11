@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+//TODO FKs change to entities
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

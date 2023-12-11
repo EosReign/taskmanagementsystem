@@ -12,6 +12,7 @@ import ru.eosreign.taskmanagementsystem.mapper.TaskDtoMapper;
 import java.util.List;
 import java.util.Optional;
 
+//TODO Вынести Optional обработку из dao
 @Repository
 public class TaskDao {
     private final NamedParameterJdbcTemplate template;

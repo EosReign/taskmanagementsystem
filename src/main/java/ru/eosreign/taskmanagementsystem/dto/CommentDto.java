@@ -4,15 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CustomerDto {
+public class CommentDto {
     private Long id;
-    private String fio;
-    private String email;
-    private Long authorityId;
-    private LocalDateTime createdAt;
+    private Long authorId;
+    private Long taskId;
+    private String text;
+    private LocalDate createdAt;
+
 }

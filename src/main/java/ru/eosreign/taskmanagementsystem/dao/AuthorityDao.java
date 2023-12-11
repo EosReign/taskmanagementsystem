@@ -10,6 +10,7 @@ import ru.eosreign.taskmanagementsystem.exception.AuthorityNotFoundException;
 
 import java.util.Optional;
 
+//TODO Вынести Optional обработку из dao
 @Repository
 public class AuthorityDao {
 

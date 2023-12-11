@@ -23,4 +23,14 @@ CREATE TABLE task(
     executor    BIGINT      ,
     FOREIGN KEY (author) REFERENCES customer (id),
     FOREIGN KEY (executor) REFERENCES customer (id)
+);
+
+CREATE TABLE comment(
+    id          BIGSERIAL   PRIMARY KEY NOT NULL,
+    text        TEXT        NOT NULL,
+    author      BIGINT      NOT NULL,
+    task        BIGINT      NOT NULL,
+    created_at  TIMESTAMP   DEFAULT now(),
+    FOREIGN KEY (author) REFERENCES customer (id),
+    FOREIGN KEY (task) REFERENCES task (id)
 )

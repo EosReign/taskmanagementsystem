@@ -7,17 +7,18 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 import ru.eosreign.taskmanagementsystem.dto.NewCustomerDto;
 import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
+import ru.eosreign.taskmanagementsystem.entity.Authority;
 import ru.eosreign.taskmanagementsystem.entity.Customer;
 import ru.eosreign.taskmanagementsystem.exception.CustomerNotFoundException;
 import ru.eosreign.taskmanagementsystem.exception.EmptyCustomerTableException;
 import ru.eosreign.taskmanagementsystem.mapper.CustomerDtoMapper;
-import ru.eosreign.taskmanagementsystem.mapper.CustomerRowMapper;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+//TODO Вынести Optional обработку из dao
 @Repository
 public class CustomerDao {
 
@@ -79,7 +80,20 @@ public class CustomerDao {
         SqlParameterSource parameterSource = new MapSqlParameterSource("email", email);
 
         return Optional.ofNullable(
-                        template.queryForObject(sql, parameterSource, new CustomerRowMapper()))
+                        template.queryForObject(sql, parameterSource, (rs, rowNum) -> {
+                            Customer customer = new Customer();
+                            Authority authority = new Authority();
+
+                            customer.setId(rs.getLong("id"));
+                            customer.setFio(rs.getString("fio"));
+                            customer.setPassword(rs.getString("password"));
+
+                            authority.setId(rs.getLong("authority"));
+                            customer.setAuthority(authority);
+                            customer.setEmail(rs.getString("email"));
+                            customer.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime().toLocalDate());
+                            return customer;
+                        }))
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("Customer with email: %s not found", email)));
     }
 }
