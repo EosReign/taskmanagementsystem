@@ -26,11 +26,24 @@ public class AuthController {
     public AuthController(AuthService service) {
         this.service = service;
     }
+    @Operation(summary = "Login customer",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Customer is authenticated",
+                            content = {
+                                    @Content(
+                                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                            schema = @Schema(implementation = Customer.class)
+                                    )
+                            }
+                    )
 
-    @PostMapping("/auth")
+            })
+
+    @PostMapping("/login")
     public ResponseEntity<JwtResponse> createAuthToken(@RequestBody JwtRequest authRequest) {
         return new ResponseEntity<>(service.createAuthToken(authRequest), HttpStatus.CREATED);
-
     }
 
     @Operation(summary = "Create customer",

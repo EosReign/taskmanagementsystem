@@ -13,7 +13,8 @@ import ru.eosreign.taskmanagementsystem.exception.EmptyCustomerTableException;
 import ru.eosreign.taskmanagementsystem.mapper.CustomerDtoMapper;
 import ru.eosreign.taskmanagementsystem.mapper.CustomerRowMapper;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,14 +29,14 @@ public class CustomerDao {
 
     public Long createCustomer(NewCustomerDto dto, Long authorityId) {
         String sql = "INSERT INTO customer (fio, email, password, authority, created_at) " +
-                "VALUES (:fio, :email, :password, :authority, :createdAt) " +
+                "VALUES (:fio, :email, :password, :authority, :created_at) " +
                 "RETURNING ID";
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("fio", dto.getFio())
                 .addValue("email", dto.getEmail())
                 .addValue("password", dto.getPassword())
                 .addValue("authority", authorityId)
-                .addValue("created_at", LocalDate.now());
+                .addValue("created_at", Timestamp.valueOf(LocalDateTime.now()));
 
         return Optional.ofNullable(
                         template.queryForObject(sql, parameterSource, Long.class))

@@ -9,7 +9,7 @@ CREATE TABLE customer(
     email       TEXT        ,
     password    TEXT        NOT NULL,
     authority   BIGINT      NOT NULL,
-    created_at   TIMESTAMP   DEFAULT now(),
+    created_at  TIMESTAMP   DEFAULT now(),
     FOREIGN KEY (authority) REFERENCES authority (id)
 );
 
