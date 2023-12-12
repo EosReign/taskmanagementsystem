@@ -16,4 +16,19 @@
 9) Write some basic tests for checking general functions of your system.
 10) Use for system realisation language Java 17+, Spring, Spring Boot. You can use PostgreSQL or MySQL for DB. Necessary use Spring Security for realisation authentication and authorization. You can use additional tools, if you need it.
 
- 
+
+***
+
+#### Steps for start Api (Windows):
+
+1) Start the Docker Desktop;
+2) Go to file docker-compose.yml in path: "../taskmanagementsystem/docker-compose.yml" and start container;
+3) Go to file TaskmanagementsystemApplication in path: "../taskmanagementsystem/src/main/java/ru/eosreign/taskmanagementsystem/TaskmanagementsystemApplication" and run application;
+
+***
+
+#### For testing api with Swagger.ui: 
+
+1) Go to some browser;
+2) In address stroke write this: "http://localhost:8080/swagger-ui/index.html";
+3) Check methods for interaction with Api;
