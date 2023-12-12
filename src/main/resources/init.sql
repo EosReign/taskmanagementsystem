@@ -6,7 +6,7 @@ CREATE TABLE authority(
 CREATE TABLE customer(
     id          BIGSERIAL   PRIMARY KEY NOT NULL,
     fio         TEXT        NOT NULL,
-    email       TEXT        ,
+    email       TEXT        UNIQUE,
     password    TEXT        NOT NULL,
     authority   BIGINT      NOT NULL,
     created_at  TIMESTAMP   DEFAULT now(),

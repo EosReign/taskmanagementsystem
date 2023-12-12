@@ -1,4 +1,4 @@
-package ru.eosreign.taskmanagementsystem.controller;
+package ru.eosreign.taskmanagementsystem.controller.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.eosreign.taskmanagementsystem.exception.AuthorityNotFoundException;
 import ru.eosreign.taskmanagementsystem.exception.CustomerNotFoundException;
-import ru.eosreign.taskmanagementsystem.exception.EmptyCustomerTableException;
+import ru.eosreign.taskmanagementsystem.exception.CustomerTableIsEmptyException;
 
 @Slf4j
 @RestControllerAdvice
@@ -22,7 +22,7 @@ public class CustomerExceptionHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<String> customerTableIsEmpty(EmptyCustomerTableException exception) {
+    public ResponseEntity<String> customerTableIsEmpty(CustomerTableIsEmptyException exception) {
         log.error(exception.getMessage(), exception);
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }

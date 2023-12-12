@@ -1,22 +1,19 @@
 package ru.eosreign.taskmanagementsystem.service;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.eosreign.taskmanagementsystem.dao.AuthorityDao;
 import ru.eosreign.taskmanagementsystem.dao.CustomerDao;
 import ru.eosreign.taskmanagementsystem.dto.ListCustomerDto;
-import ru.eosreign.taskmanagementsystem.dto.NewCustomerDto;
 import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
 import ru.eosreign.taskmanagementsystem.entity.Customer;
+import ru.eosreign.taskmanagementsystem.exception.CustomerNotFoundException;
+import ru.eosreign.taskmanagementsystem.exception.CustomerTableIsEmptyException;
 
 import java.util.*;
-
-import static java.util.Arrays.stream;
 
 @Service
 public class CustomerService implements UserDetailsService {
@@ -30,15 +27,21 @@ public class CustomerService implements UserDetailsService {
         this.authorityDao = authorityDao;
     }
 
-    public CustomerDto getCustomer(Long id) {
-        return customerDao.getCustomer(id);
+    public CustomerDto getCustomer(Long id) throws CustomerNotFoundException {
+        return customerDao.getCustomer(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer is not found")
+                );
     }
 
-    public ListCustomerDto getCustomers() {
-        return new ListCustomerDto(customerDao.getCustomers());
+    public ListCustomerDto getCustomers() throws CustomerTableIsEmptyException {
+        return new ListCustomerDto(customerDao.getCustomers()
+                .orElseThrow(() -> new CustomerTableIsEmptyException("Customer table is empty")
+                ));
     }
-    public Customer getCustomerByEmail(String email) {
-        return customerDao.getCustomerByEmail(email);
+    public Customer getCustomerByEmail(String email) throws CustomerNotFoundException {
+        return customerDao.getCustomerByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer with " + email + " not found")
+                );
     }
 
     public CustomerDto updateCustomer(CustomerDto dto, Long id) {
@@ -46,14 +49,18 @@ public class CustomerService implements UserDetailsService {
         return dto;
     }
 
-    public void deleteCustomer(Long id) {
+    public CustomerDto deleteCustomer(Long id) throws CustomerNotFoundException {
+        CustomerDto dto = customerDao.getCustomer(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer with id: " + id + " not found"));
         customerDao.deleteCustomer(id);
+        authorityDao.deleteAuthority(dto.getAuthorityId());
+        return dto;
     }
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer = customerDao.getCustomerByEmail(username);
+    public UserDetails loadUserByUsername(String username) throws CustomerNotFoundException {
+        Customer customer = getCustomerByEmail(username);
 
         List<SimpleGrantedAuthority> roles = new ArrayList<>();
         roles.add(new SimpleGrantedAuthority(customer.getAuthority().getRole()));

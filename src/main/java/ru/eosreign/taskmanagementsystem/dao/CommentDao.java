@@ -6,16 +6,14 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.eosreign.taskmanagementsystem.dto.CommentDto;
 import ru.eosreign.taskmanagementsystem.dto.NewCommentDto;
-import ru.eosreign.taskmanagementsystem.exception.AuthorityNotFoundException;
 import ru.eosreign.taskmanagementsystem.exception.CommentNotFoundException;
-import ru.eosreign.taskmanagementsystem.mapper.CommentDtoMapper;
+import ru.eosreign.taskmanagementsystem.mapper.rowmapper.CommentDtoMapper;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-//TODO Вынести Optional обработку из dao
 @Repository
 public class CommentDao {
     private final NamedParameterJdbcTemplate template;
@@ -24,7 +22,7 @@ public class CommentDao {
         this.template = template;
     }
 
-    public Long createComment(NewCommentDto dto) {
+    public Optional<Long> createComment(NewCommentDto dto) {
         String sql = "INSERT INTO comment (author, task, text, created_at) " +
                 "VALUES (:author, :task, :text, :created_at) " +
                 "RETURNING ID";
@@ -35,21 +33,21 @@ public class CommentDao {
                 .addValue("created_at", Timestamp.valueOf(LocalDateTime.now()));
 
         return Optional.ofNullable(
-                        template.queryForObject(sql, parameterSource, Long.class))
-                .orElseThrow(() -> new RuntimeException("I dont have any idea what's happen."));
+                template.queryForObject(sql, parameterSource, Long.class));
     }
 
-    public CommentDto getComment(Long id) throws CommentNotFoundException {
+    public Optional<CommentDto> getComment(Long id) throws CommentNotFoundException {
         String sql = "SELECT comment.id FROM comment WHERE comment.id = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource("id", id);
 
         return Optional.ofNullable(
-                        template.queryForObject(sql, parameterSource, new CommentDtoMapper()))
-                .orElseThrow(() -> new AuthorityNotFoundException(String.format("Authority id-%d not found", id)));
+                template.queryForObject(sql, parameterSource, new CommentDtoMapper()));
     }
 
     public void updateComment(String text, Long id) {
-        String sql = "UPDATE comment SET text = :text WHERE id = :id";
+        String sql = "UPDATE comment " +
+                "SET text = :text " +
+                "WHERE id = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", id)
                 .addValue("text", text);
@@ -62,11 +60,10 @@ public class CommentDao {
         template.update(sql, parameterSource);
     }
 
-    public List<CommentDto> getComments() {
+    public Optional<List<CommentDto>> getComments() {
         String sql = "SELECT * FROM comment LIMIT 30";
 
         return Optional.ofNullable(
-                        template.query(sql, new CommentDtoMapper()))
-                .orElseThrow(() -> new AuthorityNotFoundException(String.format("Comments not found")));
+                        template.query(sql, new CommentDtoMapper()));
     }
 }

@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import ru.eosreign.taskmanagementsystem.entity.Authority;
 import ru.eosreign.taskmanagementsystem.exception.AuthorityNotFoundException;
+import ru.eosreign.taskmanagementsystem.mapper.rowmapper.AuthorityMapper;
 
 import java.util.Optional;
 
-//TODO Вынести Optional обработку из dao
 @Repository
 public class AuthorityDao {
 
@@ -20,7 +20,7 @@ public class AuthorityDao {
         this.template = template;
     }
 
-    public Long createAuthority(String role) {
+    public Optional<Long> createAuthority(String role) {
         String sql = "INSERT INTO authority (role) " +
                 "VALUES (:role) " +
                 "RETURNING ID";
@@ -28,22 +28,17 @@ public class AuthorityDao {
                 .addValue("role", role);
 
         return Optional.ofNullable(
-                        template.queryForObject(sql, parameterSource, Long.class))
-                .orElseThrow(() -> new RuntimeException("I dont have any idea what's happen."));
+                template.queryForObject(sql, parameterSource, Long.class));
     }
 
-    public Authority getAuthority(Long id) throws AuthorityNotFoundException {
+    public Optional<Authority> getAuthority(Long id) throws AuthorityNotFoundException {
         String sql = "SELECT authority.id FROM authority WHERE authority.id = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource("id", id);
 
         return Optional.ofNullable(
-                        template.queryForObject(sql, parameterSource, (rs, rf) -> {
-                            Authority authority = new Authority();
-                            authority.setId(rs.getLong("id"));
-                            authority.setRole(rs.getString("role"));
-                            return authority;
-                        }))
-                .orElseThrow(() -> new AuthorityNotFoundException(String.format("Authority id-%d not found", id)));
+                template.queryForObject(sql, parameterSource, new AuthorityMapper())
+        );
+
     }
 
     public void updateAuthority(String role, Long id) {
@@ -59,6 +54,5 @@ public class AuthorityDao {
         SqlParameterSource parameterSource = new MapSqlParameterSource("id", id);
         template.update(sql, parameterSource);
     }
-
 
 }

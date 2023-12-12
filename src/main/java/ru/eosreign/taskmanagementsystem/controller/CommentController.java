@@ -117,8 +117,8 @@ public class CommentController {
 
             })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable("id") Long id) {
+    public ResponseEntity<CommentDto> deleteComment(@PathVariable("id") Long id) {
         service.deleteComment(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(service.deleteComment(id), HttpStatus.OK);
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import ru.eosreign.taskmanagementsystem.dto.ListTaskDto;
+import ru.eosreign.taskmanagementsystem.dto.NewTaskDto;
 import ru.eosreign.taskmanagementsystem.dto.TaskDto;
 import ru.eosreign.taskmanagementsystem.entity.Customer;
 import ru.eosreign.taskmanagementsystem.service.TaskService;
@@ -37,10 +38,9 @@ public class TaskController {
                                     )
                             }
                     )
-
             })
     @PostMapping()
-    public ResponseEntity<TaskDto> createTask(@RequestBody TaskDto dto) {
+    public ResponseEntity<TaskDto> createTask(@RequestBody NewTaskDto dto) {
         return new ResponseEntity<>(taskService.createTask(dto), HttpStatus.CREATED);
     }
 
@@ -56,7 +56,6 @@ public class TaskController {
                                     )
                             }
                     )
-
             })
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> readTask(@PathVariable("id") Long id) {
@@ -75,7 +74,6 @@ public class TaskController {
                                     )
                             }
                     )
-
             })
     @GetMapping()
     public ResponseEntity<ListTaskDto> readTasks() {
@@ -94,7 +92,6 @@ public class TaskController {
                                     )
                             }
                     )
-
             })
     @PutMapping("/{id}")
     public ResponseEntity<TaskDto> updateTask(@RequestBody TaskDto dto,
@@ -117,8 +114,7 @@ public class TaskController {
 
             })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable("id") Long id) {
-        taskService.deleteTask(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<TaskDto> deleteTask(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(taskService.deleteTask(id), HttpStatus.OK);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
 import ru.eosreign.taskmanagementsystem.dto.JwtRequest;
 import ru.eosreign.taskmanagementsystem.dto.JwtResponse;
 import ru.eosreign.taskmanagementsystem.dto.NewCustomerDto;
@@ -38,7 +39,6 @@ public class AuthController {
                                     )
                             }
                     )
-
             })
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> createAuthToken(@RequestBody JwtRequest authRequest) {
@@ -57,10 +57,9 @@ public class AuthController {
                                     )
                             }
                     )
-
             })
     @PostMapping("/register")
-    public ResponseEntity<NewCustomerDto> createCustomer(@RequestBody NewCustomerDto dto) {
+    public ResponseEntity<CustomerDto> createCustomer(@RequestBody NewCustomerDto dto) {
         return new ResponseEntity<>(service.createCustomer(dto), HttpStatus.CREATED);
     }
 

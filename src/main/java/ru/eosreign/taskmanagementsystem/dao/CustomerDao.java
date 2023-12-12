@@ -10,15 +10,13 @@ import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
 import ru.eosreign.taskmanagementsystem.entity.Authority;
 import ru.eosreign.taskmanagementsystem.entity.Customer;
 import ru.eosreign.taskmanagementsystem.exception.CustomerNotFoundException;
-import ru.eosreign.taskmanagementsystem.exception.EmptyCustomerTableException;
-import ru.eosreign.taskmanagementsystem.mapper.CustomerDtoMapper;
+import ru.eosreign.taskmanagementsystem.mapper.rowmapper.CustomerDtoMapper;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-//TODO Вынести Optional обработку из dao
 @Repository
 public class CustomerDao {
 
@@ -28,7 +26,7 @@ public class CustomerDao {
         this.template = template;
     }
 
-    public Long createCustomer(NewCustomerDto dto, Long authorityId) {
+    public Optional<Long> createCustomer(NewCustomerDto dto, Long authorityId) {
         String sql = "INSERT INTO customer (fio, email, password, authority, created_at) " +
                 "VALUES (:fio, :email, :password, :authority, :created_at) " +
                 "RETURNING ID";
@@ -40,28 +38,28 @@ public class CustomerDao {
                 .addValue("created_at", Timestamp.valueOf(LocalDateTime.now()));
 
         return Optional.ofNullable(
-                        template.queryForObject(sql, parameterSource, Long.class))
-                .orElseThrow(() -> new RuntimeException("I dont have any idea what's happen."));
+                        template.queryForObject(sql, parameterSource, Long.class));
     }
 
-    public CustomerDto getCustomer(Long id) throws CustomerNotFoundException {
+    public Optional<CustomerDto> getCustomer(Long id) throws CustomerNotFoundException {
         String sql = "SELECT * FROM customer WHERE customer.id = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource("id", id);
 
         return Optional.ofNullable(
-                        template.queryForObject(sql, parameterSource, new CustomerDtoMapper()))
-                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer id-%d not found", id)));
+                        template.queryForObject(sql, parameterSource, new CustomerDtoMapper()));
     }
 
-    public List<CustomerDto> getCustomers() throws CustomerNotFoundException {
+    public Optional<List<CustomerDto>> getCustomers() throws CustomerNotFoundException {
         String sql = "SELECT * FROM customer LIMIT 20";
         return Optional.ofNullable(
-                        template.query(sql, new CustomerDtoMapper()))
-                .orElseThrow(() -> new EmptyCustomerTableException("table is empty"));
+                        template.query(sql, new CustomerDtoMapper()));
     }
 
     public void updateCustomer(CustomerDto dto, Long id) {
-        String sql = "UPDATE customer SET fio = :fio, email = :email WHERE id = :id";
+        String sql = "UPDATE customer " +
+                "SET fio = :fio, " +
+                "email = :email " +
+                "WHERE id = :id";
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("id", id)
                 .addValue("fio", dto.getFio())
@@ -75,7 +73,7 @@ public class CustomerDao {
         template.update(sql, parameterSource);
     }
 
-    public Customer getCustomerByEmail(String email) throws UsernameNotFoundException {
+    public Optional<Customer> getCustomerByEmail(String email) throws UsernameNotFoundException {
         String sql = "SELECT * FROM customer WHERE customer.email = :email";
         SqlParameterSource parameterSource = new MapSqlParameterSource("email", email);
 
@@ -93,7 +91,7 @@ public class CustomerDao {
                             customer.setEmail(rs.getString("email"));
                             customer.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime().toLocalDate());
                             return customer;
-                        }))
-                .orElseThrow(() -> new UsernameNotFoundException(String.format("Customer with email: %s not found", email)));
+                        }));
+
     }
 }

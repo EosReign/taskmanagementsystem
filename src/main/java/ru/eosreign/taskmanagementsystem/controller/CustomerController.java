@@ -78,7 +78,7 @@ public class CustomerController {
         return new ResponseEntity<>(customerService.updateCustomer(dto, id), HttpStatus.OK);
     }
 
-    @Operation(summary = "delete customer by id",
+    @Operation(summary = "Delete customer by id",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -93,9 +93,8 @@ public class CustomerController {
 
             })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable("id") Long id) {
-        customerService.deleteCustomer(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<CustomerDto> deleteCustomer(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(customerService.deleteCustomer(id), HttpStatus.OK);
     }
 
 

@@ -1,7 +1,6 @@
-package ru.eosreign.taskmanagementsystem.mapper;
+package ru.eosreign.taskmanagementsystem.mapper.rowmapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import ru.eosreign.taskmanagementsystem.dto.AuthorityDto;
 import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
 
 import java.sql.ResultSet;
@@ -15,6 +14,7 @@ public class CustomerDtoMapper implements RowMapper<CustomerDto> {
         customer.setFio(rs.getString("fio"));
         customer.setEmail(rs.getString("email"));
         customer.setAuthorityId(rs.getLong("authority"));
+        customer.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         return customer;
     }
 }

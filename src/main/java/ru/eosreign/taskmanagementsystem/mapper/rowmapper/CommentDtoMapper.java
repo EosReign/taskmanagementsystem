@@ -1,4 +1,4 @@
-package ru.eosreign.taskmanagementsystem.mapper;
+package ru.eosreign.taskmanagementsystem.mapper.rowmapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import ru.eosreign.taskmanagementsystem.dto.CommentDto;
@@ -15,7 +15,6 @@ public class CommentDtoMapper implements RowMapper<CommentDto> {
         dto.setTaskId(rs.getLong("task"));
         dto.setText(rs.getString("text"));
         dto.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime().toLocalDate());
-
         return dto;
     }
 }
