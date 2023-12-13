@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.eosreign.taskmanagementsystem.dto.NewTaskDto;
 import ru.eosreign.taskmanagementsystem.dto.TaskDto;
+import ru.eosreign.taskmanagementsystem.dto.UpdateTaskDto;
 import ru.eosreign.taskmanagementsystem.exception.TaskNotFoundException;
 import ru.eosreign.taskmanagementsystem.mapper.rowmapper.TaskDtoMapper;
 
@@ -48,7 +49,7 @@ public class TaskDao {
                         template.query(sql, new TaskDtoMapper()));
     }
 
-    public void updateTask(TaskDto dto, Long id) {
+    public void updateTask(UpdateTaskDto dto, Long id) {
         String sql = "UPDATE task SET " +
                 "header = :header, " +
                 "description = :description, " +

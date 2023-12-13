@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.eosreign.taskmanagementsystem.dto.ListTaskDto;
 import ru.eosreign.taskmanagementsystem.dto.NewTaskDto;
 import ru.eosreign.taskmanagementsystem.dto.TaskDto;
+import ru.eosreign.taskmanagementsystem.dto.UpdateTaskDto;
 import ru.eosreign.taskmanagementsystem.entity.Customer;
 import ru.eosreign.taskmanagementsystem.service.TaskService;
 
@@ -94,7 +95,7 @@ public class TaskController {
                     )
             })
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDto> updateTask(@RequestBody TaskDto dto,
+    public ResponseEntity<TaskDto> updateTask(@RequestBody UpdateTaskDto dto,
                                               @PathVariable("id") Long id) {
         return new ResponseEntity<>(taskService.updateTask(dto, id), HttpStatus.OK);
     }

@@ -5,8 +5,10 @@ import ru.eosreign.taskmanagementsystem.dao.TaskDao;
 import ru.eosreign.taskmanagementsystem.dto.ListTaskDto;
 import ru.eosreign.taskmanagementsystem.dto.NewTaskDto;
 import ru.eosreign.taskmanagementsystem.dto.TaskDto;
+import ru.eosreign.taskmanagementsystem.dto.UpdateTaskDto;
 import ru.eosreign.taskmanagementsystem.exception.*;
 import ru.eosreign.taskmanagementsystem.mapper.NewTaskDtoMapper;
+import ru.eosreign.taskmanagementsystem.mapper.UpdateTaskDtoMapper;
 
 @Service
 public class TaskService {
@@ -18,10 +20,10 @@ public class TaskService {
     public TaskDto createTask(NewTaskDto dto) {
         try {
             if (!statusIsValid(dto.getStatus())) {
-                throw new UnvalidTaskStatusException("Status must be in high register and " +
+                throw new InvalidTaskStatusException("Status must be in high register and " +
                         "can be in variants: IN_PROCESS, AWAITING, COMPLETE");
             } else if (!priorityIsValid(dto.getPriority())) {
-                throw new UnvalidTaskPriorityException("Priority must be in high register and " +
+                throw new InvalidTaskPriorityException("Priority must be in high register and " +
                         "can be in variants: HIGH, MEDIUM, LOW");
             }
             TaskDto response = NewTaskDtoMapper.toTaskDto(dto);
@@ -30,10 +32,10 @@ public class TaskService {
                     ));
             return response;
 
-        } catch (UnvalidTaskStatusException e) {
-            throw new UnvalidTaskStatusException(e.getMessage());
-        } catch (UnvalidTaskPriorityException e) {
-            throw new UnvalidTaskPriorityException(e.getMessage());
+        } catch (InvalidTaskStatusException e) {
+            throw new InvalidTaskStatusException(e.getMessage());
+        } catch (InvalidTaskPriorityException e) {
+            throw new InvalidTaskPriorityException(e.getMessage());
         } catch (CreatingTaskIsFailedException e) {
             throw new CreatingTaskIsFailedException(e.getMessage());
         }
@@ -41,7 +43,7 @@ public class TaskService {
 
     public TaskDto getTask(Long id) throws TaskNotFoundException {
         return taskDao.getTask(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found by id"));
+                .orElseThrow(() -> new TaskNotFoundException("Task not found by id" + id));
     }
 
     public ListTaskDto getTasks() throws TaskTableIsEmptyException {
@@ -49,9 +51,14 @@ public class TaskService {
                 .orElseThrow(() -> new TaskTableIsEmptyException("Task table is empty")));
     }
 
-    public TaskDto updateTask(TaskDto dto, Long id) {
+    public TaskDto updateTask(UpdateTaskDto dto, Long id) throws TaskNotFoundException {
+        taskDao.getTask(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found by id" + id)
+                );
+        TaskDto response = UpdateTaskDtoMapper.toTaskDto(dto);
+        response.setId(id);
         taskDao.updateTask(dto, id);
-        return dto;
+        return response;
     }
 
     public TaskDto deleteTask(Long id) throws TaskNotFoundException {
