@@ -19,9 +19,8 @@ public class CommentService {
     public CommentDto createComment(NewCommentDto dto) throws CreatingCommentFailedException {
         Long id = commentDao.createComment(dto)
                 .orElseThrow(() -> new CreatingCommentFailedException("Creating comment was failed"));
-        CommentDto commentDto = commentDao.getComment(id)
+        return commentDao.getComment(id)
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found by id:" + id));
-        return commentDto;
     }
 
     public CommentDto getComment(Long id) throws CommentNotFoundException {
