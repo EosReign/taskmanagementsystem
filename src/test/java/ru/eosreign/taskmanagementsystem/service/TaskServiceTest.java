@@ -54,7 +54,6 @@ public class TaskServiceTest {
 
     @Test
     public void createTask_Valid_NewTaskDto_ReturnTaskDto() {
-        testTaskDto.setId(1L);
         testTaskDto.setExecutor(null);
 
         Mockito.when(taskDao.createTask(testNewTaskDto))
@@ -136,7 +135,6 @@ public class TaskServiceTest {
 
     @Test
     public void updateTask_ReturnTaskDto() {
-
         Mockito.when(taskDao.getTask(1L))
                 .thenReturn(Optional.of(testTaskDto));
 

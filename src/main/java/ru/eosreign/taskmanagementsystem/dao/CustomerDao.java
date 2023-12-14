@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 import ru.eosreign.taskmanagementsystem.dto.NewCustomerDto;
 import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
+import ru.eosreign.taskmanagementsystem.dto.UpdateCustomerDto;
 import ru.eosreign.taskmanagementsystem.entity.Authority;
 import ru.eosreign.taskmanagementsystem.entity.Customer;
 import ru.eosreign.taskmanagementsystem.exception.CustomerNotFoundException;
@@ -55,7 +56,7 @@ public class CustomerDao {
                         template.query(sql, new CustomerDtoMapper()));
     }
 
-    public void updateCustomer(CustomerDto dto, Long id) {
+    public void updateCustomer(UpdateCustomerDto dto, Long id) {
         String sql = "UPDATE customer " +
                 "SET fio = :fio, " +
                 "email = :email " +

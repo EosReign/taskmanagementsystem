@@ -9,9 +9,11 @@ import ru.eosreign.taskmanagementsystem.dao.AuthorityDao;
 import ru.eosreign.taskmanagementsystem.dao.CustomerDao;
 import ru.eosreign.taskmanagementsystem.dto.ListCustomerDto;
 import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
+import ru.eosreign.taskmanagementsystem.dto.UpdateCustomerDto;
 import ru.eosreign.taskmanagementsystem.entity.Customer;
 import ru.eosreign.taskmanagementsystem.exception.CustomerNotFoundException;
 import ru.eosreign.taskmanagementsystem.exception.CustomerTableIsEmptyException;
+import ru.eosreign.taskmanagementsystem.mapper.UpdateCustomerDtoMapper;
 
 import java.util.*;
 
@@ -29,7 +31,7 @@ public class CustomerService implements UserDetailsService {
 
     public CustomerDto getCustomer(Long id) throws CustomerNotFoundException {
         return customerDao.getCustomer(id)
-                .orElseThrow(() -> new CustomerNotFoundException("Customer is not found")
+                .orElseThrow(() -> new CustomerNotFoundException("Customer with id: " + id + " not found")
                 );
     }
 
@@ -44,9 +46,14 @@ public class CustomerService implements UserDetailsService {
                 );
     }
 
-    public CustomerDto updateCustomer(CustomerDto dto, Long id) {
-        customerDao.updateCustomer(dto, id);
-        return dto;
+    //TODO обработка на сравнение до и после изменения
+    public CustomerDto updateCustomer(UpdateCustomerDto request, Long id) throws CustomerNotFoundException {
+        customerDao.getCustomer(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer with id: " + id + " not found"));
+        CustomerDto response = UpdateCustomerDtoMapper.toCustomerDto(request);
+        response.setId(id);
+        customerDao.updateCustomer(request, id);
+        return response;
     }
 
     public CustomerDto deleteCustomer(Long id) throws CustomerNotFoundException {

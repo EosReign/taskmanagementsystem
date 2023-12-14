@@ -51,6 +51,7 @@ public class TaskService {
                 .orElseThrow(() -> new TaskTableIsEmptyException("Task table is empty")));
     }
 
+    //TODO обработка на сравнение до и после изменения
     public TaskDto updateTask(UpdateTaskDto dto, Long id) throws TaskNotFoundException {
         taskDao.getTask(id)
                 .orElseThrow(() -> new TaskNotFoundException("Task not found by id" + id)

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.eosreign.taskmanagementsystem.dto.ListCustomerDto;
 import ru.eosreign.taskmanagementsystem.dto.NewCustomerDto;
 import ru.eosreign.taskmanagementsystem.dto.CustomerDto;
+import ru.eosreign.taskmanagementsystem.dto.UpdateCustomerDto;
 import ru.eosreign.taskmanagementsystem.entity.Customer;
 import ru.eosreign.taskmanagementsystem.service.CustomerService;
 
@@ -73,8 +74,8 @@ public class CustomerController {
 
             })
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody CustomerDto dto,
-                                                      @PathVariable("id") Long id) {
+    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody UpdateCustomerDto dto,
+                                                            @PathVariable("id") Long id) {
         return new ResponseEntity<>(customerService.updateCustomer(dto, id), HttpStatus.OK);
     }
 
